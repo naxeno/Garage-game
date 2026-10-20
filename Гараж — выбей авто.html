@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Гараж — выбей авто</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap">
+<style>
+:root{--bg:#f3f1ea;--card:#fff;--ink:#16171a;--mut:#7b7d85;--line:#e2dfd4;--gold:#f2b705;--gold2:#ffdc66;--on-gold:#2a2000;--ok:#1f9d55;--bad:#d64545;--c0:#8b8d96;--c1:#2f7de1;--c2:#a14fe0;--c3:#e0a100;--c4:#e0245e;--c5:#111;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0e;--card:#1b1b1f;--ink:#f4f4f6;--mut:#8b8d96;--line:#2a2a30;--c3:#f2b705;--c5:#fff}}
+:root[data-theme="dark"]{--bg:#0c0c0e;--card:#1b1b1f;--ink:#f4f4f6;--mut:#8b8d96;--line:#2a2a30;--c3:#f2b705;--c5:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif}
+body{max-width:520px;margin:0 auto;padding:12px 14px 40px;min-height:100vh}
+.top{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.pill{background:var(--card);border-radius:999px;padding:10px 14px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.bar{width:44px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--gold);width:0}
+.bal{margin-left:auto;text-align:right}.bal small{display:block;color:var(--mut);font-size:12px;font-weight:600}.bal b{font-size:24px;font-weight:800}
+.tabs{display:flex;gap:6px;background:var(--card);padding:4px;border-radius:14px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font:700 13px Manrope,sans-serif;padding:10px 2px;border-radius:10px}
+.tabs button.on{background:var(--ink);color:var(--bg)}
+.car{background:var(--card);border:3px solid var(--rc,var(--line));border-radius:18px;padding:18px 16px;text-align:center;box-shadow:0 0 28px -8px var(--rc,transparent)}
+.car.big{min-height:190px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.car .fl{font-size:34px}.car .br{color:var(--mut);font-weight:700;font-size:15px}.car .md{font-weight:800;font-size:clamp(26px,8vw,36px);line-height:1.1}
+.car .rn{font-weight:800;font-size:14px;color:var(--rc)}.car .vl{font-weight:700;font-size:14px;color:var(--mut)}
+.car.pop{animation:pop .5s}@keyframes pop{40%{transform:scale(1.05)}}
+.r5{background:linear-gradient(90deg,#ff3d6e,#ffb300,#2ee59d,#3d8bff,#c13dff);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.car.s5{border-image:linear-gradient(90deg,#ff3d6e,#ffb300,#2ee59d,#3d8bff,#c13dff) 1;border-radius:0}
+.res{text-align:center;font-weight:700;min-height:24px;margin:10px 0 0}
+.row{display:flex;gap:8px;margin:12px 0;overflow-x:auto;padding-bottom:2px}
+.chip{flex:none;background:var(--card);border:2px solid transparent;color:var(--ink);font:700 14px Manrope,sans-serif;padding:10px 13px;border-radius:999px}
+.chip.on{border-color:var(--gold)}.chip:disabled{opacity:.35}
+.go{width:100%;border:0;border-radius:18px;padding:19px;font:800 19px Manrope,sans-serif;background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--on-gold)}
+.go:disabled{opacity:.55}.go.no{background:var(--card);color:var(--ink)}
+.luck{width:100%;margin-top:10px;background:none;border:2px dashed var(--gold);color:var(--ink);border-radius:14px;padding:12px;font:700 14px Manrope,sans-serif}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g .car{padding:10px 8px;border-width:2px;border-radius:14px}.g .car .md{font-size:18px}.g .car .fl{font-size:22px}.g .car .br{font-size:12px}
+.g .car .bt{display:flex;gap:6px;margin-top:8px}.bt button{flex:1;border:0;border-radius:10px;padding:8px 2px;font:700 12px Manrope,sans-serif;background:var(--line);color:var(--ink)}
+.bt button.up{background:var(--gold);color:var(--on-gold)}
+.sil{display:block;width:100%;max-width:250px;height:auto;margin:0 auto 6px}.g .sil{max-width:140px}
+.empty{color:var(--mut);text-align:center;padding:36px 10px;line-height:1.5}
+.sum{color:var(--mut);font-weight:700;font-size:13px;margin-bottom:10px}
+.hide{display:none}
+.mod{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center;z-index:50}.mod.hide{display:none}
+.sheet{background:var(--bg);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto;animation:up .3s}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.ci{width:100%;display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid transparent;color:var(--ink);border-radius:14px;padding:12px 14px;margin-bottom:8px;font:700 15px Manrope,sans-serif;text-align:left}
+.ci.on{border-color:var(--gold)}.ci .cf{font-size:26px}.ci .ct{flex:1;display:flex;flex-direction:column}.ci small{color:var(--mut);font-weight:600;font-size:12px}.ci .cp{font-weight:800}
+.sh-t{font-weight:800;font-size:18px;text-align:center;margin-bottom:12px}
+.ctrw{margin:12px 0 0}
+.cbtn{width:100%;display:flex;justify-content:space-between;align-items:center;background:var(--card);border:2px solid var(--gold);color:var(--ink);border-radius:16px;padding:14px 16px;font:700 15px Manrope,sans-serif}
+.clist{margin-top:6px;background:var(--card);border-radius:16px;overflow:hidden}
+.clist button{width:100%;display:flex;justify-content:space-between;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:700 15px Manrope,sans-serif;padding:13px 16px}
+.clist button.on{background:var(--line)}.clist button:last-child{border-bottom:0}
+.sheet .g .bt button{padding:10px 2px;line-height:1.25}
+.g3{grid-template-columns:repeat(3,1fr);gap:8px}.g3 .car .md{font-size:13px}.g3 .car .vl{font-size:11px}.g3 .car .rn{font-size:11px}
+.reel.s3 .rwin{height:112px;border-bottom:1px solid var(--line)}.reel.s3 .rt{width:110px;height:112px;padding-top:6px}.reel.s3 .rt .sil{max-width:92px}.reel.s3 .rm{font-size:11px}
+.inp{flex:1;min-width:0;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:10px 14px;font:700 14px Manrope,sans-serif}
+.bt2{margin-top:10px}
+.pic{display:block;width:100%;max-width:270px;border-radius:12px;margin:0 auto 6px;background-color:#0d1117;background-repeat:no-repeat}.g .pic{max-width:150px}.rt .pic{max-width:134px}
+.car.reel{padding:0;overflow:hidden;display:block;min-height:0}
+.rwin{position:relative;overflow:hidden;width:100%;height:158px}
+.rstrip{display:flex;position:absolute;left:0;top:0;will-change:transform}
+.rt{flex:none;width:150px;padding:14px 8px 0;text-align:center;border-right:1px solid var(--line);height:158px}
+.rt .sil{max-width:130px}.rm{font-weight:800;font-size:13px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rptr{position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--gold);transform:translateX(-50%);box-shadow:0 0 12px var(--gold)}
+.car.flash{animation:pop .5s,fl 1.4s}@keyframes fl{0%,100%{box-shadow:0 0 28px -8px var(--rc)}40%{box-shadow:0 0 70px 8px var(--rc)}}
+.zone{position:relative;height:18px;background:var(--bad);border-radius:9px;margin:16px 0 6px;overflow:hidden;opacity:.9}
+.zone i{position:absolute;left:0;top:0;bottom:0;background:var(--ok)}
+.zone b{position:absolute;top:-2px;bottom:-2px;left:0;width:5px;background:var(--ink);border-radius:3px;transition:left 1.6s cubic-bezier(.2,.7,.2,1)}
+.info{display:flex;justify-content:space-between;color:var(--mut);font-weight:700;font-size:13px}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="pill">Ур. <span id="lvl">1</span><div class="bar"><i id="xp"></i></div></div>
+  <div class="pill">🍀 <span id="luck">1</span>×</div>
+  <div class="bal"><small>Баланс</small><b id="bal">0 ₽</b></div>
+</div>
+<div class="tabs"><button class="on" data-t="play">Контейнеры</button><button data-t="garage">Гараж <span id="gc"></span></button><button data-t="up">Апгрейдер</button><button data-t="fr">Друзья</button></div>
+
+<section id="play">
+  <div class="car big" id="card"></div>
+  <div class="res" id="res"></div>
+  <div class="ctrw" id="ctr"></div><div class="row" id="cnt"></div>
+  <button class="go" id="go">Крутить</button>
+  <button class="luck" id="lk">🍀 Удача ×5 на 2 минуты — забрать бесплатно</button>
+</section>
+
+<section id="garage" class="hide"><div class="sum" id="sum"></div><div class="g" id="glist"></div></section>
+
+<section id="fr" class="hide"><div id="frb"></div></section>
+<section id="up" class="hide">
+  <div id="usrc"></div>
+  <div class="row" id="mults"></div>
+  <div class="zone"><i id="zg"></i><b id="mk"></b></div>
+  <div class="info"><span id="uch"></span><span id="utg"></span></div>
+  <div class="res" id="ures"></div>
+  <button class="go" id="ugo" style="margin-top:8px">Апгрейд</button>
+</section>
+
+<div id="mod" class="mod hide"><div class="sheet" id="sheet"></div></div>
+<div id="mod2" class="mod hide"><div class="sheet" id="sheet2"></div></div>
+<script>
+const RN=['Обычный','Редкий','Эпический','Легендарный','Мифический','Секретный'];
+const VAL=[5000,20000,80000,400000,1500000,8000000],MULTS=[1.5,2,3,5,10];
+const CONT=[
+{n:'Россия',f:'🇷🇺',h:3,c:27000,d:'Лады и бюджетные авто',w:[70,22,6,1.9,.1,0]},
+{n:'Китай',f:'🇨🇳',h:4,c:54000,d:'Доступные авто и электрокары',w:[55,28,12,4.5,.5,0]},
+{n:'Япония',f:'🇯🇵',h:5,c:78000,d:'Надёжные и спортивные',w:[50,28,14,7,1,0]},
+{n:'США',f:'🇺🇸',h:2,c:155000,d:'Маслкары, пикапы, суперкары',w:[40,28,18,11,2.8,.2]},
+{n:'Германия',f:'🇩🇪',h:0,c:210000,d:'Премиум и спорт',w:[35,27,20,13,4.7,.3]},
+{n:'Великобритания',f:'🇬🇧',h:1,c:305000,d:'Роскошь и суперкары',w:[25,25,25,17,7.5,.5]},
+{n:'Италия',f:'🇮🇹',h:6,c:400000,d:'Суперкары',w:[20,22,28,20,9,1]},
+{n:'ОАЭ',f:'🇦🇪',h:-1,c:1330000,d:'Только элитные авто со всего мира',w:[0,0,10,50,36,4]}];
+const short=n=>n>=1e6?(n/1e6+'').replace('.',',')+' млн':(n/1000)+' тыс.';
+const D=[
+["Германия","🇩🇪",[["BMW","116i~0;X1~0;320i~0;X5~1;M240i~1;M3~2;M4~2;M5~3;XM Label Red~3;M8 Competition~4;3.0 CSL Hommage~5"],
+["Mercedes-Benz","A-Class~0;C 200~0;E 300~1;GLE~1;AMG C63~2;G63 AMG~3;AMG GT R~3;S 680 Maybach~4;AMG One~4;CLK GTR~5"],
+["Audi","A3~0;A4~0;Q7~1;RS6 Avant~2;RS e-tron GT~2;R8 V10~3;Sport Quattro S1~5"],
+["Porsche","Macan~1;Cayenne~1;911 Carrera~2;Taycan Turbo S~2;911 GT3 RS~3;918 Spyder~4;959~5"]]],
+["Великобритания","🇬🇧",[["Range Rover","Evoque~1;Velar~1;Sport~2;Autobiography~2;SV~3;Sport SVR~3"],
+["Bentley","Continental GT~3;Bentayga~3;Mulsanne~3;Batur~4"],
+["Rolls-Royce","Ghost~3;Cullinan~4;Phantom~4;Sweptail~5"],
+["McLaren","570S~2;720S~3;Senna~4;P1~4;F1~5"],
+["Aston Martin","Vantage~3;DB11~3;Valkyrie~5"],
+["Mini","Cooper~0;Countryman~0;JCW~1"]]],
+["США","🇺🇸",[["Ford","Focus~0;Fusion~0;Mustang GT~1;F-150 Raptor~2;Shelby GT500~3;Ford GT~4;GT40 Mk II~5"],
+["Chevrolet","Cruze~0;Tahoe~1;Camaro SS~1;Corvette C8~3;Corvette ZR1~3"],
+["Dodge","Charger~1;Challenger Hellcat~2;Viper ACR~3;Challenger Demon 170~4"],
+["Tesla","Model 3~1;Model S Plaid~2;Cybertruck~3;Roadster~4"],
+["Hennessey","Venom F5~5"]]],
+["Россия","🇷🇺",[["Lada","Granta~0;Vesta~0;Niva Legend~0;Vesta Sport~1;Niva Travel~0"],
+["UAZ","Hunter~0;Patriot~1;Pickup~1"],
+["ГАЗ","Волга ГАЗ-21~2;Волга ГАЗ-24~1;Соболь~0"],
+["Aurus","Senat~3;Komendant~4;Senat Limousine~5"],
+["ЗИЛ","ЗИЛ-115~3;ЗИЛ-41047~3"]]],
+["Китай","🇨🇳",[["BYD","Dolphin~0;Seal~1;Han~1;Yangwang U8~4;Yangwang U9 Track~5"],
+["Chery / Geely","Tiggo 7~0;Coolray~0;Zeekr 001 FR~3"],
+["Hongqi","H5~1;H9~2;L5~4"],
+["NIO","ET5~1;ET7~2;EP9~4"]]],
+["Япония","🇯🇵",[["Toyota","Corolla~0;Camry~0;RAV4~1;Land Cruiser 300~2;Supra A90~2;Supra A80~3;2000GT~5"],
+["Nissan","Qashqai~0;GT-R R35 Nismo~3;Skyline GT-R R34~3;R390~5"],
+["Honda","Civic Type R~1;NSX~3"],
+["Lexus","RX~1;LC 500~2;LFA~4"]]],
+["Италия","🇮🇹",[["Ferrari","Roma~3;488 GTB~3;F40~4;Enzo~4;LaFerrari~4;250 GTO~5"],
+["Lamborghini","Urus~3;Huracán~3;Aventador SVJ~4;Sián~4;Countach LP400~5"],
+["Alfa Romeo","Giulia~1;Stelvio~1;Giulia Quadrifoglio~2"],
+["Fiat","500~0;Panda~0"]]]];
+const CARS=[],CT=[];
+D.forEach((c,ci)=>{CT.push(c[0]);c[2].forEach(b=>b[1].split(';').forEach(s=>{const[m,t]=s.split('~');CARS.push({ci,fl:c[1],b:b[0],m,t:+t,v:VAL[+t]})}))});
+const $=id=>document.getElementById(id),rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
+const fmt=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
+const ERA={'Волга ГАЗ-21':[1956,1970],'Волга ГАЗ-24':[1970,1992],'GT40 Mk II':[1966,1967],'250 GTO':[1962,1964],'2000GT':[1967,1970],'Sport Quattro S1':[1984,1986],'959':[1987,1988],'F1':[1993,1998],'ЗИЛ-115':[1971,1985],'ЗИЛ-41047':[1985,1990],'Countach LP400':[1974,1978],'F40':[1987,1992],'R390':[1997,1998],'CLK GTR':[1998,1999]};
+const fmtKm=n=>n.toLocaleString('ru-RU')+' км';
+const val=x=>x.v!=null?x.v:CARS[x.i].v;
+function mk(i){const c=CARS[i],e=ERA[c.m];let y,km,f,n=0;
+ if(e){y=e[0]+rnd(e[1]-e[0]+1);km=Math.round((5000+Math.random()*115000)/100)*100;f=1.4-km/150000*.8}
+ else if(Math.random()<.08){n=1;y=2026;km=rnd(31);f=1.5}
+ else{const a=Math.floor(Math.pow(Math.random(),1.6)*13)+1;y=2026-a;km=Math.round((a*(6000+Math.random()*12000)+Math.random()*5000)/100)*100;f=1.25*(1-.025*a)*(1-Math.min(.4,km/500000))}
+ f*=.95+Math.random()*.1;
+ return{i,y,km,n,v:Math.round(c.v*f/100)*100}}
+const fill=x=>{if(x.v==null)Object.assign(x,mk(x.i))};
+let S={bal:150000,xp:0,lvl:1,luckUntil:0,cs:0,cnt:1,garage:[],sel:null,mult:2,u:1,me:'',refBy:'',refEarned:0,paid:{}};
+try{const x=JSON.parse(localStorage.getItem('garage_v1')||'null');if(x)S=Object.assign(S,x)}catch(e){}
+const save=()=>{try{localStorage.setItem('garage_v1',JSON.stringify(S))}catch(e){}};
+if(!S.me){S.me=Array.from(crypto.getRandomValues(new Uint8Array(6)),b=>'abcdefghjkmnpqrstuvwxyz23456789'[b%31]).join('');save()}
+S.garage=S.garage.concat(S.pend||[]);S.pend=[];S.garage.forEach(fill);
+let busy=false,COPEN=false;
+const luckX=()=>Date.now()<S.luckUntil?5:1;
+function draw(ci){
+  const k=CONT[ci],f=1+(luckX()-1)*.25,w=k.w.map((x,t)=>t>=2?x*f:x);
+  let r=Math.random()*w.reduce((a,b)=>a+b,0),t=w.map(x=>x>0).lastIndexOf(true);
+  for(let i=0;i<6;i++){if((r-=w[i])<0){t=i;break}}
+  const all=CARS.filter(c=>c.t==t),home=CARS.filter(c=>c.t==t&&c.ci==k.h);
+  return CARS.indexOf(pick(k.h>=0&&home.length&&Math.random()<.55?home:all));
+}
+const BT=[['wedge',/Cybertruck|Countach|Sián|Revuelto/],['boxy',/G63|Niva|Hunter|Patriot|Land Cruiser/],['wagon',/RS6/],['pickup',/Raptor|Pickup/],['van',/Соболь/],['suv',/X1$|X3|X5|XM|GLE|G63|Q7|Macan|Cayenne|Range Rover|Bentayga|Cullinan|Tahoe|Patriot|Niva|Hunter|Komendant|Urus|Stelvio|Qashqai|RAV4|Land Cruiser|RX|Tiggo|Coolray|U8|Countryman/],['limo',/Maybach|Phantom|Ghost|Mulsanne|Limousine|Senat|ЗИЛ|L5/],['classic',/Волга|GT40|250 GTO|2000GT|CSL|Quattro S1/],['super',/M8|AMG GT|AMG One|R8|918|959|GT3|Batur|McLaren|Valkyrie|Vantage|Corvette|Viper|Ford GT|Venom|Tesla Roadster|Ferrari|Lamborghini|MC20|LFA|NSX|GT-R|R390|Supra A80|EP9|Zeekr|U9|Sweptail|Continental GT|DB11/],['coupe',/M4|M240i|Mustang|Camaro|Challenger|Supra|911|LC 500/],['hatch',/116i|A3|A-Class|Focus|Cooper|JCW|Civic|Dolphin|Fiat 500|Fiat Panda/]];
+const SH={
+sedan:['M8 56 Q8 46 20 44 L52 40 L72 24 Q76 21 84 21 L124 21 Q132 21 138 26 L158 42 L184 46 Q194 48 194 56 L194 60 L8 60Z','M76 27 L100 25 L100 40 L60 40Z M106 25 L124 25 L142 40 L106 40Z',[48,152]],
+hatch:['M10 56 Q10 46 22 44 L50 40 L66 24 Q70 21 78 21 L140 21 Q148 22 152 30 L160 44 L186 48 Q194 50 194 56 L194 60 L10 60Z','M72 27 L100 25 L100 40 L58 40Z M106 25 L138 25 L152 40 L106 40Z',[48,152]],
+suv:['M8 58 L8 44 Q8 40 14 38 L44 34 L58 20 Q60 18 66 18 L152 18 Q158 18 162 24 L176 36 L188 40 Q194 42 194 50 L194 62 L8 62Z','M64 24 L100 22 L100 36 L50 36Z M106 22 L150 22 L166 36 L106 36Z',[48,152]],
+coupe:['M6 56 Q6 48 18 46 L60 42 L90 26 Q96 23 106 23 L128 23 Q140 24 148 32 L162 44 L188 48 Q196 50 196 56 L196 60 L6 60Z','M92 29 L110 26 L110 40 L72 40Z M116 26 L128 26 L144 40 L116 40Z',[46,152]],
+super:['M4 56 Q4 50 16 48 L70 44 L100 30 Q108 27 122 28 L142 32 L170 44 L192 48 Q198 50 198 56 L198 60 L4 60Z','M102 33 L120 31 L120 42 L84 42Z M124 32 L138 34 L156 42 L124 42Z',[44,154]],
+pickup:['M8 58 L8 44 Q8 40 14 38 L50 34 L62 22 Q64 20 70 20 L112 20 Q118 20 120 26 L124 36 L190 36 Q194 36 194 40 L194 62 L8 62Z','M68 26 L90 24 L90 36 L56 36Z M96 24 L112 24 L118 36 L96 36Z',[46,152]],
+van:['M8 58 L8 36 Q8 32 14 30 L40 26 L56 16 Q58 14 64 14 L178 14 Q192 14 194 28 L194 62 L8 62Z','M62 20 L96 18 L96 34 L48 34Z M102 18 L130 18 L130 34 L102 34Z',[46,152]],
+limo:['M4 56 Q4 46 14 44 L44 40 L62 24 Q66 21 74 21 L146 21 Q154 21 160 26 L176 42 L190 46 Q198 48 198 56 L198 60 L4 60Z','M68 27 L92 25 L92 40 L54 40Z M98 25 L120 25 L120 40 L98 40Z M126 25 L146 25 L164 40 L126 40Z',[38,160]],
+classic:['M10 58 Q10 48 20 46 L44 44 L62 24 Q66 20 76 20 L120 20 Q130 20 136 26 L150 44 L180 46 Q192 48 192 56 L192 60 L10 60Z','M68 26 L92 24 L92 42 L54 42Z M98 24 L120 24 L132 42 L98 42Z',[48,150]]};
+SH.wedge=['M6 58 L6 52 L60 40 L150 26 L190 40 Q196 44 196 52 L196 60 L6 60Z','M70 40 L140 29 L170 38 L70 42Z',[46,152]];
+SH.boxy=['M8 62 L8 24 Q8 18 14 18 L172 18 Q180 18 182 24 L190 34 Q194 38 194 44 L194 62Z','M18 24 L90 24 L90 38 L18 38Z M96 24 L150 24 L150 38 L96 38Z',[46,152]];
+SH.wagon=['M8 56 Q8 46 20 44 L52 40 L72 24 Q76 21 84 21 L158 21 Q166 22 170 30 L180 44 L190 46 Q196 48 196 56 L196 60 L8 60Z','M76 27 L100 25 L100 40 L60 40Z M106 25 L160 25 L172 40 L106 40Z',[48,152]];
+const LOGOS=['BMW','Mercedes-Benz','Audi','Porsche','Range Rover','Bentley','Rolls-Royce','McLaren','Aston Martin','Mini','Ford','Chevrolet','Dodge','Tesla','Hennessey','Lada','UAZ','ГАЗ','Aurus','ЗИЛ','BYD','Chery / Geely','Hongqi','NIO'];
+function badge(k){
+ const li=LOGOS.indexOf(k);
+ if(li>=0)return `<svg x='3' y='2' width='34' height='24' viewBox='${(li%6)*200} ${Math.floor(li/6)*120} 200 120'><image href='/_blob/0434d98f5d57d3a291d554cbcd4b1970' width='1200' height='480'/></svg>`;
+ if(k=='Nissan')return `<circle cx='20' cy='14' r='10' fill='none' stroke='#ccd' stroke-width='2'/><rect x='8' y='11.5' width='24' height='5' fill='#0d1117' stroke='#ccd'/><text x='20' y='15.8' text-anchor='middle' font-size='4.6' font-weight='800' fill='#ccd'>NISSAN</text>`;
+ if(k=='Honda')return `<rect x='9' y='3' width='22' height='22' rx='3' fill='#d3202b'/><text x='20' y='20' text-anchor='middle' font-size='17' font-weight='800' fill='#fff'>H</text>`;
+ if(k=='Lexus')return `<ellipse cx='20' cy='14' rx='14' ry='10' fill='none' stroke='#ccd' stroke-width='1.8'/><text x='20' y='19' text-anchor='middle' font-size='13' font-weight='800' font-style='italic' fill='#ccd'>L</text>`;
+ if(k=='Alfa Romeo')return `<circle cx='20' cy='14' r='11' fill='#1b6b3a'/><path d='M20 3 A11 11 0 0 0 20 25Z' fill='#fff'/><path d='M14.5 8 V20 M9.5 14 H20' stroke='#d3202b' stroke-width='2.2'/><circle cx='20' cy='14' r='11' fill='none' stroke='#ccd'/>`;
+ if(k=='Fiat')return `<rect x='4' y='6' width='32' height='16' rx='8' fill='#8b1a2b'/><text x='20' y='18' text-anchor='middle' font-size='9' font-weight='800' fill='#fff'>FIAT</text>`;
+ if(k=='BMW')return `<circle cx='20' cy='14' r='11' fill='#fff' stroke='#222' stroke-width='2'/><path d='M20 14 L20 3 A11 11 0 0 1 31 14Z M20 14 L20 25 A11 11 0 0 1 9 14Z' fill='#1c69d4'/>`;
+ if(k=='Mercedes-Benz')return `<circle cx='20' cy='14' r='11' fill='none' stroke='#aab' stroke-width='2'/><path d='M20 14 L20 4 M20 14 L11.3 19 M20 14 L28.7 19' stroke='#aab' stroke-width='2'/>`;
+ if(k=='Audi')return [9,16,23,30].map(x=>`<circle cx='${x}' cy='14' r='5' fill='none' stroke='#aab' stroke-width='1.8'/>`).join('');
+ if(k=='Toyota')return `<ellipse cx='20' cy='14' rx='13' ry='9' fill='none' stroke='#e0245e' stroke-width='2'/><ellipse cx='20' cy='14' rx='6' ry='3.5' fill='none' stroke='#e0245e' stroke-width='1.6'/>`;
+ if(k=='Ford')return `<ellipse cx='20' cy='14' rx='15' ry='8' fill='#1f4ea1'/><text x='20' y='17' text-anchor='middle' font-size='9' font-style='italic' font-weight='800' fill='#fff'>Ford</text>`;
+ if(k=='Ferrari')return `<path d='M10 3 H30 V16 Q30 26 20 27 Q10 26 10 16Z' fill='#f7d117' stroke='#222'/><text x='20' y='19' text-anchor='middle' font-size='12' font-weight='800' fill='#111'>F</text>`;
+ if(k=='Lamborghini')return `<path d='M10 3 H30 V16 Q30 26 20 27 Q10 26 10 16Z' fill='#111' stroke='#d4a017'/><text x='20' y='19' text-anchor='middle' font-size='12' font-weight='800' fill='#d4a017'>L</text>`;
+ let h=0;for(const ch of k)h=(h*31+ch.charCodeAt(0))%360;
+ const m=k.split(/[ \-\/]/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+ return `<circle cx='20' cy='14' r='11' fill='hsl(${h},55%,42%)'/><text x='20' y='18' text-anchor='middle' font-size='11' font-weight='800' fill='#fff' font-family='Manrope,sans-serif'>${m}</text>`}
+const SHEETS=["/_blob/775167dae4a1e4c667a032b8778147cf", "/_blob/96f68fca843bbb58108ab11dbd79a9dd", "/_blob/562dc9744ca2fa7279bf2baa038c8973", "/_blob/c6f4d2a9a9ae72f307b80abb1b2abcd6", "/_blob/27493f8cff6004f9ca358692347b1820"];
+const IMG={"BMW|116i":[0,30,135,127,100],"BMW|X1":[0,167,105,148,130],"BMW|320i":[0,300,105,143,130],"BMW|X5":[0,445,105,140,130],"BMW|M240i":[0,582,105,141,130],"BMW|M3":[0,717,105,136,130],"BMW|M4":[0,847,105,128,130],"BMW|M5":[0,971,105,132,130],"BMW|XM Label Red":[0,1105,105,142,130],"BMW|M8 Competition":[0,1247,105,138,130],"BMW|3.0 CSL Hommage":[0,1385,105,120,130],"Mercedes-Benz|A-Class":[0,33,360,122,95],"Mercedes-Benz|C 200":[0,179,350,138,100],"Mercedes-Benz|E 300":[0,330,320,155,135],"Mercedes-Benz|GLE":[0,487,320,156,135],"Mercedes-Benz|AMG C63":[0,645,320,140,135],"Mercedes-Benz|G63 AMG":[0,787,320,140,135],"Mercedes-Benz|AMG GT R":[0,935,320,140,135],"Mercedes-Benz|S 680 Maybach":[0,1082,320,161,135],"Mercedes-Benz|AMG One":[0,1243,320,130,135],"Mercedes-Benz|CLK GTR":[0,1380,320,125,135],"Audi|A3":[0,80,575,177,105],"Audi|A4":[0,277,548,173,130],"Audi|Q7":[0,470,548,167,130],"Audi|RS6 Avant":[0,641,548,162,130],"Audi|RS e-tron GT":[0,833,548,180,130],"Audi|R8 V10":[0,1015,548,170,130],"Audi|Sport Quattro S1":[0,1190,548,165,130],"Porsche|Macan":[0,97,795,196,115],"Porsche|Cayenne":[0,310,770,185,140],"Porsche|911 Carrera":[0,512,770,178,140],"Porsche|Taycan Turbo S":[0,708,770,180,140],"Porsche|911 GT3 RS":[0,903,770,184,140],"Porsche|918 Spyder":[0,1108,770,190,140],"Porsche|959":[0,1315,770,180,140],"Range Rover|Evoque":[1,23,122,147,115],"Range Rover|Velar":[1,163,122,154,115],"Range Rover|Sport":[1,315,122,152,115],"Range Rover|Autobiography":[1,465,122,150,115],"Range Rover|SV":[1,610,122,145,115],"Range Rover|Sport SVR":[1,743,122,140,115],"Bentley|Continental GT":[1,903,125,157,115],"Bentley|Bentayga":[1,1060,125,145,115],"Bentley|Mulsanne":[1,1213,125,167,115],"Bentley|Batur":[1,1373,125,147,115],"Rolls-Royce|Ghost":[1,20,385,175,132],"Rolls-Royce|Cullinan":[1,180,385,177,132],"Rolls-Royce|Phantom":[1,343,385,180,132],"Rolls-Royce|Sweptail":[1,513,385,177,132],"McLaren|570S":[1,717,405,153,122],"McLaren|720S":[1,867,405,160,122],"McLaren|Senna":[1,1025,405,165,122],"McLaren|P1":[1,1190,405,170,122],"McLaren|F1":[1,1365,405,152,122],"Aston Martin|Vantage":[1,30,688,230,135],"Aston Martin|DB11":[1,260,688,215,135],"Aston Martin|Valkyrie":[1,487,688,258,135],"Mini|Cooper":[1,800,672,215,160],"Mini|Countryman":[1,1030,672,230,160],"Mini|JCW":[1,1267,672,223,160],"Ford|Focus":[2,23,95,187,115],"Ford|Fusion":[2,233,78,187,132],"Ford|Mustang GT":[2,435,78,200,132],"Ford|F-150 Raptor":[2,645,78,222,132],"Ford|Shelby GT500":[2,880,78,205,132],"Ford|Ford GT":[2,1097,78,206,132],"Ford|GT40 Mk II":[2,1320,78,195,132],"Chevrolet|Cruze":[2,60,322,220,118],"Chevrolet|Tahoe":[2,330,305,243,135],"Chevrolet|Camaro SS":[2,617,305,248,135],"Chevrolet|Corvette C8":[2,905,305,262,135],"Chevrolet|Corvette ZR1":[2,1205,305,258,135],"Dodge|Charger":[2,135,548,288,128],"Dodge|Challenger Hellcat":[2,477,548,290,128],"Dodge|Viper ACR":[2,813,548,272,128],"Dodge|Challenger Demon 170":[2,1150,548,290,128],"Tesla|Model 3":[2,63,796,222,122],"Tesla|Model S Plaid":[2,303,790,237,128],"Tesla|Cybertruck":[2,563,790,237,128],"Tesla|Roadster":[2,810,790,220,128],"Hennessey|Venom F5":[2,1175,796,295,128],"Lada|Granta":[3,40,88,233,137],"Lada|Vesta":[3,320,65,260,160],"Lada|Niva Legend":[3,613,65,250,160],"Lada|Vesta Sport":[3,910,65,267,160],"Lada|Niva Travel":[3,1230,65,265,160],"UAZ|Hunter":[3,293,305,264,172],"UAZ|Patriot":[3,650,305,280,172],"UAZ|Pickup":[3,1013,305,327,172],"ГАЗ|Волга ГАЗ-21":[3,242,548,285,148],"ГАЗ|Волга ГАЗ-24":[3,605,548,312,148],"ГАЗ|Соболь":[3,1003,548,250,148],"Aurus|Senat":[3,45,812,250,126],"Aurus|Komendant":[3,295,798,245,140],"Aurus|Senat Limousine":[3,548,798,297,140],"ЗИЛ|ЗИЛ-115":[3,897,800,290,140],"ЗИЛ|ЗИЛ-41047":[3,1213,800,297,140],"BYD|Dolphin":[4,37,98,238,150],"BYD|Seal":[4,308,78,252,170],"BYD|Han":[4,587,78,273,170],"BYD|Yangwang U8":[4,883,78,287,170],"BYD|Yangwang U9 Track":[4,1200,78,290,170],"Chery / Geely|Tiggo 7":[4,30,408,240,142],"Chery / Geely|Coolray":[4,278,408,237,142],"Chery / Geely|Zeekr 001 FR":[4,520,408,240,142],"Hongqi|H5":[4,790,415,228,140],"Hongqi|H9":[4,1012,415,250,140],"Hongqi|L5":[4,1263,415,254,140],"NIO|ET5":[4,103,714,410,174],"NIO|ET7":[4,563,708,407,180],"NIO|EP9":[4,1045,708,420,180]};
+function sil(c){const r=null;if(r){const[si,x,y,w,h]=r;return `<div class='pic' role='img' aria-label='${c.b} ${c.m}' style='aspect-ratio:${w}/${h};background-image:url(${SHEETS[si]});background-size:${1536/w*100}% auto;background-position:${x/(1536-w)*100}% ${y/(1024-h)*100}%'></div>`}const m=c.m.length>13?c.m.slice(0,13):c.m;
+ return sil0(c).replace('</svg>',`<rect x='1' y='1' width='38' height='26' rx='13' style='fill:#0d1117;stroke:#2a2a30'/>`+badge(c.b)+`<text x='100' y='54' text-anchor='middle' font-size='9' font-weight='800' fill='#fff' opacity='.9' font-family='Manrope,sans-serif'>${m}</text></svg>`)}
+function sil0(c){const s=c.b+' '+c.m;let t='sedan';for(const[k,r]of BT)if(r.test(s)){t=k;break}
+ const h=SH[t];return '<svg class="sil" viewBox="0 0 200 76" aria-hidden="true"><defs><linearGradient id="rb" x1="0" x2="1"><stop offset="0" stop-color="#ff3d6e"/><stop offset=".25" stop-color="#ffb300"/><stop offset=".5" stop-color="#2ee59d"/><stop offset=".75" stop-color="#3d8bff"/><stop offset="1" stop-color="#c13dff"/></linearGradient></defs><ellipse cx="100" cy="70" rx="86" ry="4" fill="#000" opacity=".15"/><path d="'+h[0]+'" style="fill:'+(c.t==5?'url(#rb)':'var(--rc)')+'"/><path d="'+h[1]+'" fill="#000" opacity=".4"/>'+h[2].map(x=>'<circle cx="'+x+'" cy="58" r="11" fill="#17171a"/><circle cx="'+x+'" cy="58" r="5" fill="#9a9aa3"/>').join('')+'</svg>'}
+function card(i,o){o=o||{};const x=typeof i=='object'?i:{i};const c=CARS[x.i];
+  return '<div class="car'+(c.t==5?' s5':'')+(o.cls?' '+o.cls:'')+'" style="--rc:var(--c'+c.t+')">'+
+  sil(c)+'<div class="br">'+c.fl+' '+c.b+'</div><div class="md">'+c.m+'</div>'+
+  '<div class="rn'+(c.t==5?' r5':'')+'">'+RN[c.t]+'</div>'+
+  (x.y?'<div class="vl">'+x.y+(x.n?' · Новый · ':' · ')+fmtKm(x.km)+'</div>':'')+
+  '<div class="vl" style="color:var(--ink)">'+fmt(val(x))+'</div>'+(o.btn||'')+'</div>';
+}
+function render(){
+  $('bal').textContent=fmt(S.bal);$('lvl').textContent=S.lvl;
+  $('xp').style.width=Math.min(100,S.xp/(S.lvl*10)*100)+'%';
+  $('luck').textContent=luckX();$('gc').textContent=S.garage.length?'('+S.garage.length+')':'';
+  $('ctr').innerHTML=`<button class='cbtn' data-copen><span>${CONT[S.cs].f} <b>${CONT[S.cs].n}</b> · ${short(CONT[S.cs].c)}</span><span>▾</span></button>`;
+  $('cnt').innerHTML=[1,3].map(n=>`<button class='chip ${S.cnt==n?'on':''}' data-n='${n}'>×${n} рулетка · ${short(CONT[S.cs].c*n)}</button>`).join('');
+  const cost=CONT[S.cs].c*S.cnt,go=$('go');go.disabled=busy;
+  if(S.bal<CONT[0].c&&!S.garage.length){go.textContent='Нет денег — взять 50 000 ₽';go.className='go';go.dataset.m='bonus'}
+  else if(S.bal<cost){go.textContent='Не хватает · '+fmt(cost)+' (продай авто)';go.className='go no';go.dataset.m='low'}
+  else{go.textContent='Крутить ×'+S.cnt+' · '+fmt(cost);go.className='go';go.dataset.m='spin'}
+  const g=S.garage.slice().sort((a,b)=>val(b)-val(a));
+  $('sum').textContent=g.length?'Авто: '+g.length+' · стоимость '+fmt(g.reduce((s,x)=>s+val(x),0)):'';
+  $('glist').innerHTML=g.length?g.map(x=>card(x,{btn:'<div class="bt"><button data-sell="'+x.u+'">Продать</button><button class="up" data-up="'+x.u+'">Апгрейд</button></div>'})).join(''):'<div class="empty" style="grid-column:1/3">Гараж пуст. Открой первый контейнер на вкладке «Контейнеры».</div>';
+  renderUp();renderFr();renderSell();renderPick();
+}
+function renderSell(){const m=$('mod');
+ if(!S.pend.length){m.classList.add('hide');return}
+ const tot=S.pend.reduce((a,x)=>a+val(x),0),one=S.pend.length==1;
+ const cards=one?card(S.pend[0],{cls:'big pop'}):'<div class="g g3">'+S.pend.map(x=>card(x,{cls:'pop',btn:'<div class="bt"><button data-psell="'+x.u+'">Продать<br>'+short(val(x))+'</button></div>'})).join('')+'</div>';
+ $('sheet').innerHTML='<div class="sh-t">Выпало</div>'+cards+
+  (one?'<button class="go" style="margin-top:12px" data-psell="'+S.pend[0].u+'">Продать · '+fmt(tot)+'</button>':'<button class="go" style="margin-top:12px" data-psellall>Продать все · '+fmt(tot)+'</button>')+
+  '<button class="go no" style="margin-top:8px" data-keep>Оставить в гараже</button>';
+ m.classList.remove('hide')}
+function renderPick(){const m=$('mod2');
+ if(!COPEN){m.classList.add('hide');return}
+ $('sheet2').innerHTML='<div class="sh-t">Выбери контейнер</div>'+CONT.map((k,i)=>`<button class='ci ${S.cs==i?'on':''}' data-cs='${i}'><span class='cf'>${k.f}</span><span class='ct'><b>${k.n}</b><small>${k.d}</small></span><span class='cp'>${short(k.c)}</span></button>`).join('');
+ m.classList.remove('hide')}
+function keepP(){S.garage=S.garage.concat(S.pend);S.pend=[];save();render()}
+function sellP(us){let t=0;us.forEach(u=>{const x=S.pend.find(y=>y.u==u);if(!x)return;t+=val(x);S.pend=S.pend.filter(y=>y!==x);const c=$('card'),ch=c.classList.contains('g3')?c.children[x.k]:c;if(ch)ch.style.opacity='.35'});if(t){S.bal+=t;$('res').textContent='Продано · +'+fmt(t)}save();render()}
+function renderFr(){
+  const link='https://t.me/ВАШ_БОТ?startapp=ref_'+S.me;
+  $('frb').innerHTML=`<div class='car' style='--rc:var(--gold)'><div class='br'>Твой код приглашения</div><div class='md'>${S.me}</div><div class='vl' style='word-break:break-all;margin-top:6px'>${link}</div><div class='bt2'><button class='chip' data-copy='${link}'>Скопировать ссылку</button></div></div>
+  <div class='info' style='margin:14px 2px'><span>Друзей: ${S.friends||0}</span><span>Заработано: ${fmt(S.refEarned||0)}</span></div>
+  <div class='sum'>Ты получаешь 10% от цены каждого авто, которое выбил твой друг, начиная с эпических.</div>
+  ${S.refBy?`<div class='sum'>Ты приглашён по коду <b>${S.refBy}</b>. Его 10% идут с твоих эпических и выше.</div>`:`<div class='row'><input id='refin' class='inp' placeholder='Код друга, который тебя пригласил'><button class='chip' data-bind>Привязать</button></div>`}
+  ${DB?'':`<div class='sum' style='color:var(--bad)'>Начисления между игроками пока недоступны: нет подключения к общей базе. В настоящем боте это делает сервер.</div>`}`;
+}
+function target(src,m){
+  const tv=src.v*m,c=CARS.filter(x=>x.v>src.v);if(!c.length)return null;
+  const d=Math.min(...c.map(x=>Math.abs(x.v-tv)));return pick(c.filter(x=>Math.abs(x.v-tv)==d));
+}
+const chance=m=>Math.min(.9,.95/m);
+function renderUp(){
+  const it=S.garage.find(x=>x.u==S.sel);
+  if(!it){$('usrc').innerHTML='<div class="empty">Выбери машину в гараже и нажми «Апгрейд». Можно получить авто дороже, но при неудаче машина пропадёт.</div>';$('mults').innerHTML='';$('ugo').disabled=true;$('zg').style.width='0';$('uch').textContent='';$('utg').textContent='';return}
+  const src={v:val(it)};$('usrc').innerHTML=card(it);
+  $('mults').innerHTML=MULTS.map(m=>'<button class="chip '+(S.mult==m?'on':'')+'" data-m="'+m+'" '+(target(src,m)?'':'disabled')+'>×'+m+'</button>').join('');
+  const ok=target(src,S.mult);const p=chance(S.mult);
+  $('zg').style.width=(p*100)+'%';$('uch').textContent='Шанс '+Math.round(p*100)+'%';
+  $('utg').textContent=ok?'Цель ≈ '+fmt(src.v*S.mult):'Выше некуда';
+  $('ugo').disabled=busy||!ok;
+}
+function spin(){
+  const cost=CONT[S.cs].c*S.cnt;
+  if(busy||S.bal<cost)return;S.garage=S.garage.concat(S.pend);S.pend=[];busy=true;COPEN=false;S.bal-=cost;render();
+  $('res').textContent='';
+  const fins=[];for(let k=0;k<S.cnt;k++)fins.push(draw(S.cs));
+  reel(fins);
+}
+function reel(fins){
+ const N=34,P=28;let hh='';
+ fins.forEach((fin,j)=>{let h='';
+  for(let k=0;k<N;k++){const i=k==P?fin:rnd(CARS.length),c=CARS[i];h+=`<div class='rt' style='--rc:var(--c${c.t})'>${sil(c)}<div class='rm'>${c.m}</div></div>`}
+  hh+=`<div class='rwin'><div class='rstrip' id='rs${j}'>${h}</div><div class='rptr'></div></div>`});
+ $('card').outerHTML=`<div class='car big reel${fins.length>1?' s3':''}' id='card'>${hh}</div>`;
+ fins.forEach((fin,j)=>{
+  const rs=$('rs'+j),w=rs.parentNode.clientWidth,tw=rs.children[0].offsetWidth;
+  void rs.offsetWidth;
+  const jt=(Math.random()-.5)*tw*.6;
+  rs.style.transition='transform '+(3.4+j*.5)+'s cubic-bezier(.12,.7,.1,1)';
+  rs.style.transform='translateX('+(w/2-(P+.5)*tw+jt)+'px)';
+ });
+ setTimeout(()=>done(fins),3700+(fins.length-1)*500);
+}
+function done(fins){
+  const inst=fins.map(mk),fl=x=>CARS[x.i].t>=3?' flash':'';
+  if(fins.length==1)$('card').outerHTML=card(inst[0],{cls:'big pop'+fl(inst[0])}).replace('class="car','id="card" class="car');
+  else $('card').outerHTML="<div id='card' class='g g3'>"+inst.map(x=>card(x,{cls:'pop'+fl(x)})).join('')+"</div>";
+  let msg=fins.map(i=>CARS[i].m).join(', '),up=0;
+  S.pend=inst.map((x,k)=>Object.assign({u:S.u++,k},x));inst.forEach(x=>{S.xp++;refDrop(x)});
+  while(S.xp>=S.lvl*10){S.xp-=S.lvl*10;S.lvl++;S.bal+=25000;up++}
+  if(up)msg+=' · новый уровень, +'+fmt(25000*up);
+  $('res').textContent=msg;busy=false;save();render();
+}
+function upgrade(){
+  const it=S.garage.find(x=>x.u==S.sel);if(!it||busy)return;
+  const tg=target({v:val(it)},S.mult);if(!tg)return;
+  busy=true;$('ugo').disabled=true;$('ures').textContent='';
+  const p=chance(S.mult),r=Math.random(),mk=$('mk');
+  mk.style.transition='none';mk.style.left='0';void mk.offsetWidth;mk.style.transition='';
+  mk.style.left='calc('+(r*100)+'% - 5px)';
+  setTimeout(()=>{
+    if(r<p){Object.assign(it,mk(CARS.indexOf(tg)));$('ures').innerHTML='<span style="color:var(--ok)">Успех! Получено: '+tg.b+' '+tg.m+'</span>';$('usrc').innerHTML=card(it,{cls:'pop'})}
+    else{S.garage=S.garage.filter(x=>x!==it);S.sel=null;$('ures').innerHTML='<span style="color:var(--bad)">Неудача. Машина потеряна.</span>'}
+    busy=false;save();const m=$('ures').innerHTML;render();$('ures').innerHTML=m;
+  },1750);
+}
+document.addEventListener('click',e=>{
+  const g=k=>{const t=e.target.closest('['+k+']');return t?t.getAttribute(k):null};
+  const t=g('data-t');if(t)tab(t);
+  const cs=g('data-cs');if(cs!==null&&!busy){S.cs=+cs;COPEN=false;save();render()}
+  if(g('data-copen')!==null&&!busy){COPEN=!COPEN;render()}
+  if(e.target.id=='mod2'){COPEN=false;render()}
+  const nn=g('data-n');if(nn&&!busy){S.cnt=+nn;save();render()}
+  const ps=g('data-psell');if(ps&&!busy)sellP([+ps]);
+  if(g('data-psellall')!==null&&!busy)sellP(S.pend.map(x=>x.u));
+  if(g('data-keep')!==null||e.target.id=='mod')keepP();
+  const cp=g('data-copy');if(cp){try{navigator.clipboard.writeText(cp)}catch(x){};e.target.textContent='Скопировано'}
+  if(g('data-bind')!==null){const v=$('refin');if(v&&!bindRef(v.value))v.value=''}
+  const m=g('data-m');if(m&&!busy){S.mult=+m;render()}
+  const s=g('data-sell');if(s&&!busy){const it=S.garage.find(x=>x.u==s);if(it){S.bal+=val(it);S.garage=S.garage.filter(x=>x!==it);if(S.sel==it.u)S.sel=null;save();render()}}
+  const u=g('data-up');if(u&&!busy){S.sel=+u;$('ures').textContent='';render();tab('up')}
+});
+function tab(t){if(t!='play'&&S.pend.length){S.garage=S.garage.concat(S.pend);S.pend=[];save();render()}document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t==t));['play','garage','up','fr'].forEach(k=>$(k).classList.toggle('hide',k!=t))}
+$('go').onclick=()=>{const m=$('go').dataset.m;if(m=='bonus'){S.bal+=50000;save();render()}else if(m=='spin')spin()};
+$('ugo').onclick=upgrade;
+$('lk').onclick=()=>{S.luckUntil=Date.now()+120000;save();render();setTimeout(render,120500)};
+let DB=null;
+function refDrop(x){const c=CARS[x.i];if(c.t<2||!S.refBy||!DB)return;
+  DB.collection('ref_events').add({to:S.refBy,from:S.me,car:c.b+' '+c.m,amount:Math.round(x.v*.1),claimed:false,ts:Date.now()}).catch(()=>{})}
+function bindRef(code){code=(code||'').trim().toLowerCase();if(!code||code==S.me||S.refBy)return false;S.refBy=code;save();
+  if(DB)DB.doc('ref_friends/'+S.me).set({inviter:code,ts:Date.now()}).catch(()=>{});renderFr();return true}
+function frStart(){
+  if(!(window.claude&&claude.use))return;
+  claude.use('db').then(d=>{if(!d)return;DB=d;
+    d.collection('ref_events').where('to','==',S.me).onSnapshot(sn=>{let add=0;
+      sn.docs.forEach(x=>{const v=x.data();if(!v||v.claimed||S.paid[x.id])return;S.paid[x.id]=1;add+=v.amount;d.doc('ref_events/'+x.id).update({claimed:true}).catch(()=>{})});
+      if(add){S.bal+=add;S.refEarned=(S.refEarned||0)+add;save();render();$('res').textContent='Друг принёс +'+fmt(add)}},()=>{});
+    d.collection('ref_friends').where('inviter','==',S.me).onSnapshot(sn=>{S.friends=sn.size;renderFr()},()=>{});
+    if(S.refBy)d.doc('ref_friends/'+S.me).set({inviter:S.refBy,ts:Date.now()}).catch(()=>{});
+    renderFr();
+  }).catch(()=>{});
+}
+try{const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand()}
+  const q=new URLSearchParams(location.search).get('ref')||((tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||'').replace(/^ref_/,'');
+  if(q)bindRef(q)}catch(e){}
+frStart();
+$('card').outerHTML='<div class="car big" id="card"><div class="fl">🏁</div><div class="md">Выбей машину</div><div class="vl">Выбери контейнер и крути</div></div>';
+render();
+</script>
+</body>
+</html>
